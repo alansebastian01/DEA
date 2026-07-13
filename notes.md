@@ -545,4 +545,146 @@ If an exam question asks how to deploy a serverless application using **AWS SAM*
 
 **✅ Final Answer: A**
 
+✅ **Correct Answer: B. `ALTER TABLE DROP PARTITION`**
+
+### Why?
+
+The data engineer **manually moved** the objects in Amazon S3:
+
+* **Old partition:** `status=01` → now **empty**
+* **New partition:** `status=02` → contains the data
+
+The **AWS Glue Data Catalog** still contains metadata for the old partition because moving files in S3 does **not** automatically update the Data Catalog.
+
+To remove the stale partition metadata, use:
+
+```sql
+ALTER TABLE table_name
+DROP PARTITION (status='01');
+```
+
+---
+
+### Why the other options are incorrect
+
+#### ❌ A. `MSCK REPAIR TABLE`
+
+This command **discovers and adds missing partitions** that exist in S3 but are not in the Glue Data Catalog.
+
+It **does not remove** partitions that no longer exist.
+
+Think of it as:
+
+> **MSCK REPAIR = Add missing partitions only**
+
+---
+
+#### ❌ C. `ALTER TABLE SET TBLPROPERTIES`
+
+Changes table properties (such as metadata settings), not partitions.
+
+---
+
+#### ❌ D. `ALTER TABLE CHANGE COLUMN`
+
+Used to modify a column definition (name, type, etc.), not partition metadata.
+
+---
+
+## AWS Exam Tip
+
+Remember these Athena partition commands:
+
+| Situation                         | Command                      |
+| --------------------------------- | ---------------------------- |
+| New partitions added in S3        | `MSCK REPAIR TABLE`          |
+| Remove stale partition metadata   | `ALTER TABLE DROP PARTITION` |
+| Add a specific partition manually | `ALTER TABLE ADD PARTITION`  |
+
+Since the **`status=01` partition is stale and needs to be removed from the catalog**, the correct answer is:
+
+> ✅ **B. `ALTER TABLE DROP PARTITION`**
+
+✅ **Correct answer: A. Use the Data API in the Lambda function to access the data. Set up an Amazon VPC endpoint for the Data API.**
+
+The requirement specifically says traffic between **Lambda and the Amazon Redshift Data API** must stay on the AWS network. AWS supports an interface VPC endpoint for the Redshift Data API service name `com.amazonaws.<region>.redshift-data`; with Private DNS, Data API calls stay within the VPC/AWS network. ([AWS Documentation][1])
+
+Why not the others:
+
+* **B:** A VPC endpoint “for Lambda” does not make Lambda-to-Redshift Data API traffic private.
+* **C/D:** ODBC/JDBC connect directly to the cluster, but the question requires traffic between Lambda and the **Redshift Data API** to remain private.
+
+**Answer: A**
+
+✅ **Correct answer: B. Configure an Amazon SageMaker Unified Studio data catalog project that contains the dataset with appropriate metadata and project-based access controls.**
+
+The key clues are **discover**, **request access**, **governance controls**, and **track data lineage**. SageMaker Unified Studio supports data discovery, publishing/subscription workflows, project-based access, and lineage tracking for cataloged assets. ([AWS Documentation][1])
+
+Why not **D**? Lake Formation is strong for cross-account governed access and tag-based controls, but by itself it does not best satisfy the **discover and request access** plus **lineage** requirements. ([AWS Documentation][2])
+
+**Answer: B**
+
+✅ **Correct answer: B. Use CloudFormation StackSets with service-managed permissions. Enable automatic deployments to target accounts by using an AWS Organizations integration.**
+
+CloudFormation **StackSets** provide centralized deployment and management across multiple AWS accounts and Regions. With **service-managed permissions** and AWS Organizations integration, StackSets can automatically deploy to target accounts with much less operational overhead.
+
+Why not the others:
+
+* **A:** Requires managing separate stacks and permissions in each account.
+* **C:** Custom Lambda automation adds unnecessary operational burden.
+* **D:** Cross-account roles and custom deployment logic are more manual than StackSets.
+
+**Answer: B**
+
+A company has a data lake in Amazon S3 and uses AWS Glue across multiple AWS accounts. The company needs to control access to tables and databases in the AWS Glue Data Catalog. Specific departments need the ability to securely share data with each other. The company requires fine-grained access control that the company can manage based on department ownership.
+
+Which solution will meet these requirements?
+
+A. Create IAM roles for each department with policies that grant access to specific AWS Glue databases and tables. Use resource-based policies on S3 buckets for cross-account data access.
+B. Register all S3 locations with AWS Lake Formation. Use Lake Formation tag-based access control (LF-TBAC) to assign permissions to databases and tables.
+C. Create AWS Resource Access Manager (AWS RAM) resource shares for each database and table. Grant access to specific AWS accounts and IAM principals by using AWS RAM.
+D. Enable AWS Lake Formation hybrid access mode. Use AWS Glue resource policies to share catalogs and databases across accounts and maintain IAM permissions for existing workloads.
+
+✅ **Correct answer: A.**
+
+Use **AWS Backup** to:
+
+* Schedule monthly Aurora snapshots
+* Copy backups to a secondary Region
+* Apply lifecycle settings to transition backups to cold storage after **180 days**
+
+This has the **least effect on database performance** because it uses managed snapshot-based backups, not database export tools.
+
+Why not the others:
+
+* **B:** Aurora automated backups are continuous/PITR, not the best fit for monthly managed backup lifecycle, and S3 Lifecycle does not apply to Aurora snapshots.
+* **C:** Exporting snapshots to S3 adds unnecessary steps.
+* **D:** `mysqldump` from EC2 would significantly affect database performance.
+
+**Answer: A**
+
+**B. Use AWS Glue jobs with job bookmarks enabled to process the data with automatic scaling based on workload.**
+
+Lambda is a poor fit because processing can take **up to 30 minutes**, beyond Lambda’s typical event-processing fit. AWS Glue supports complex ETL, scales with workload, and **job bookmarks** help ensure each file is processed only once with low operational overhead.
+
+**B. Write a custom grok classifier to match the predefined column names and schema.**
+
+For text files with a changing structure and **predefined column names**, an **AWS Glue crawler with a custom grok classifier** can infer/update the schema and create/update the Data Catalog table for Athena and Quick Suite with less manual work than updating Athena tables directly.
+
+**B. Create an Amazon Bedrock knowledge base linked to an Amazon S3 bucket that contains survey data. Use Retrieval Augmented Generation (RAG) to analyze feedback trends.**
+
+Bedrock Knowledge Bases support natural-language Q&A, follow-up questions, summarization, and evidence-backed answers from your own data. It also keeps the solution managed within AWS, giving the **least operational overhead** compared with custom ML, EMR, Lambda, or manual indexing.
+
+**B. Create a domain by using the Amazon SageMaker Catalog. Define business glossary terms and publish data assets from the AWS Glue Data Catalog to the SageMaker Catalog.**
+
+This is the best fit for a **business data catalog** because it supports:
+
+* business glossary terms
+* business context on technical metadata
+* data asset publishing/discovery
+* governance controls
+* organization across AWS data sources
+
+AWS Glue Data Catalog is mainly technical metadata; SageMaker Catalog adds the business catalog and governance layer.
+
 
