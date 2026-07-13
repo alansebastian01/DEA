@@ -465,3 +465,84 @@ Why not the others:
 
 **Answer: C**
 
+✅ **Correct Answer: A. Add the first S3 bucket and the S3 event source for the Lambda function to the SAM template. Run the `sam build` command to prepare the deployment package. Run the `sam deploy --guided` command to deploy the pipeline.**
+
+### Why A is correct
+
+AWS SAM is specifically designed to build and deploy serverless applications.
+
+The workflow is:
+
+1. Define resources in the **SAM template**:
+
+   * S3 bucket
+   * Lambda function
+   * S3 event notification that triggers the Lambda function
+2. Run:
+
+   ```bash
+   sam build
+   ```
+
+   This builds the application and prepares deployment artifacts.
+3. Run:
+
+   ```bash
+   sam deploy --guided
+   ```
+
+   On the first deployment, `--guided` prompts for configuration (stack name, region, S3 bucket for artifacts, IAM capabilities, etc.) and then deploys the application as a CloudFormation stack. It also saves the configuration for future deployments.
+
+This fully automates deployment of the serverless pipeline.
+
+---
+
+### Why the other options are incorrect
+
+#### ❌ B. Deploy Lambda and manually configure the S3 trigger
+
+This defeats the purpose of using SAM to manage infrastructure as code. The requirement is to **use AWS SAM for the pipeline deployment**, which includes the S3 event source.
+
+---
+
+#### ❌ C. Use `sam package` and manually configure notifications
+
+`sam package` is an older workflow. While it uploads artifacts, the option still requires **manual configuration of S3 event notifications**, which is unnecessary because SAM can define them in the template.
+
+---
+
+#### ❌ D. Use `aws cloudformation deploy`
+
+Although SAM ultimately uses CloudFormation, the standard deployment command for SAM applications is:
+
+```bash
+sam deploy
+```
+
+Using `aws cloudformation deploy` directly bypasses SAM's deployment features (such as handling packaged artifacts and guided deployment) and is not the recommended SAM workflow.
+
+---
+
+## AWS Exam Tip
+
+For AWS SAM, remember the standard lifecycle:
+
+```text
+Write template.yaml
+        ↓
+sam build
+        ↓
+sam deploy --guided   (first deployment)
+        ↓
+sam deploy            (subsequent deployments)
+```
+
+If an exam question asks how to deploy a serverless application using **AWS SAM**, the answer is almost always:
+
+* Define all resources (Lambda, API Gateway, S3 triggers, etc.) in the SAM template.
+* Run `sam build`.
+* Run `sam deploy --guided`.
+
+**✅ Final Answer: A**
+
+
