@@ -443,3 +443,67 @@ If you're aiming to pass the exam efficiently, I can also provide:
 * **📅 A 7-day or 14-day study plan** tailored to the exam.
 
 [1]: https://docs.aws.amazon.com/aws-certification/latest/data-engineer-associate-01/data-engineer-associate-01.html?utm_source=chatgpt.com "AWS Certified Data Engineer - Associate (DEA-C01) - AWS Certified Data Engineer - Associate"
+
+
+The correct answer is:
+
+> **B. Lucene Hierarchical Navigable Small Worlds (HNSW) index with an M value of 16 and an efConstruction value of 200**
+
+### Why B is correct
+
+The requirements point directly to **HNSW**:
+
+* ✅ **High recall accuracy** — HNSW is known for excellent recall/latency tradeoffs.
+* ✅ **Supports incremental updates** — New vectors can be inserted without retraining or rebuilding the entire index.
+* ✅ **10 million 768-dimensional embeddings** — HNSW is designed for large-scale ANN (Approximate Nearest Neighbor) search.
+* ✅ **Complex filtering** (product category, inventory status) — The **Lucene HNSW** implementation in Amazon OpenSearch Service integrates well with Lucene's filtering capabilities.
+
+### Why the other options are incorrect
+
+**A. FAISS IVF**
+
+* ❌ IVF requires a **trained coarse quantizer**.
+* ❌ As new data is added, maintaining optimal accuracy often requires **retraining/reindexing**.
+* Better suited for relatively static datasets.
+
+**C. Exact k-NN (Painless script scoring)**
+
+* ❌ Performs a brute-force comparison against all **10 million vectors**.
+* ❌ Too slow and computationally expensive for an interactive recommendation system.
+
+**D. FAISS with binary quantization**
+
+* ❌ Binary quantization reduces memory usage but sacrifices recall.
+* ❌ Still inherits the limitations of IVF-style indexing for incremental updates.
+
+### AWS exam tip
+
+Remember this mapping:
+
+| Requirement                                  | Best Choice             |
+| -------------------------------------------- | ----------------------- |
+| Dynamic updates + high recall                | **HNSW** ✅              |
+| Static dataset + memory efficiency           | **IVF**                 |
+| Maximum accuracy, small datasets             | **Exact search**        |
+| Lowest memory usage, willing to trade recall | **Binary quantization** |
+
+**Answer: ✅ B**
+
+**Answer: B. Create an HNSW index with `ef_construction=128` and `m=16`. Store vectors by using the `pgvector` extension.**
+
+Why:
+
+* **5 million vectors + <100 ms latency + 1,000 QPS** needs an approximate nearest neighbor index optimized for speed.
+* **HNSW** generally provides better low-latency query performance than IVFFlat for high-scale vector similarity search.
+* `pgvector` is the native PostgreSQL extension for storing/searching embeddings in Aurora PostgreSQL.
+* AWS guidance for production pgvector on Aurora says **HNSW is the default choice for most workloads**. ([Amazon Web Services, Inc.][1])
+
+Why not the others:
+
+* **A:** “Exact IVFFlat” is wrong wording; IVFFlat is approximate, and 500 lists is likely too low for 5M vectors.
+* **C:** B-tree indexes do not work for vector similarity search.
+* **D:** IVFFlat with partitioning can work, but it adds more design/maintenance effort than HNSW, so it is not the **least development effort**.
+
+So the best exam answer is **B**.
+
+
