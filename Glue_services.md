@@ -144,3 +144,95 @@ If you're referring to **AWS Glue**, here are concise study notes on its main se
 * **Triggers** → Automates job execution.
 * **Streaming ETL** → Real-time data processing.
 * **Schema Registry** → Stores and validates schemas for streaming data.
+
+No problem! **FindMatches** is an **AWS Glue Machine Learning Transform** used for **data deduplication and record matching**.
+
+# AWS Glue FindMatches (Study Notes)
+
+## Definition
+
+**FindMatches** is an AWS Glue feature that uses **machine learning (ML)** to identify records that refer to the **same real-world entity**, even if the values are not exactly the same.
+
+Instead of requiring exact matches, it finds **similar or duplicate records**.
+
+---
+
+## Why Use FindMatches?
+
+It helps:
+
+* Remove duplicate records
+* Improve data quality
+* Merge customer or product records
+* Prepare clean datasets for analytics
+
+---
+
+## Example
+
+Suppose a customer database contains:
+
+| Customer ID | Name       | Email                                   |
+| ----------- | ---------- | --------------------------------------- |
+| 101         | John Smith | [john@gmail.com](mailto:john@gmail.com) |
+| 102         | Jon Smith  | [john@gmail.com](mailto:john@gmail.com) |
+| 103         | J. Smith   | [john@gmail.com](mailto:john@gmail.com) |
+
+Although the names are different, **FindMatches** can recognize that these records likely represent the **same person**.
+
+---
+
+## How FindMatches Works
+
+1. **Prepare the dataset** in AWS Glue.
+2. **Label sample records** as "match" or "not match" (training phase).
+3. **Train the ML model**.
+4. **Run FindMatches** on the dataset.
+5. **Review and merge** the identified duplicate records if needed.
+
+---
+
+## Features
+
+* Uses **machine learning** instead of simple rule-based matching.
+* Detects **similar** records, not just identical ones.
+* Improves **data quality**.
+* Reduces manual effort in finding duplicates.
+* Integrates with AWS Glue ETL jobs.
+
+---
+
+## Common Use Cases
+
+* Customer deduplication
+* Patient record matching in healthcare
+* Product catalog cleanup
+* Address matching
+* CRM data cleansing
+
+---
+
+## Advantages
+
+* High accuracy for duplicate detection
+* Learns from labeled examples
+* Saves time compared to manual matching
+* Works with large datasets
+
+---
+
+## Limitations
+
+* Requires a **training dataset** with labeled examples.
+* Results depend on the quality of the training data.
+* May require retraining if the data changes significantly.
+
+---
+
+# Quick Exam Summary
+
+* **FindMatches** is an **AWS Glue Machine Learning Transform**.
+* **Purpose:** Detects and groups duplicate or similar records.
+* **Uses machine learning**, not exact string matching.
+* **Common use cases:** Customer deduplication, data cleansing, and record linkage.
+* **Benefit:** Improves data quality by identifying records that represent the same entity.
