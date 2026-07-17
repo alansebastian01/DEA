@@ -116,3 +116,109 @@
 * **Kinesis Data Analytics** → Performs real-time analysis using SQL or Apache Flink.
 * **Kinesis Video Streams** → Captures and processes video streams.
 * **Key Benefit:** Enables **real-time** ingestion, processing, analysis, and delivery of streaming data.
+
+If you're studying **Amazon Kinesis**, the **Producer Library** usually refers to the **Amazon Kinesis Producer Library (KPL)**.
+
+# Amazon Kinesis Producer Library (KPL)
+
+## Definition
+
+The **Kinesis Producer Library (KPL)** is a Java library that helps applications **efficiently write (send) data to Amazon Kinesis Data Streams**.
+
+A **producer** is any application or device that generates and sends data to a Kinesis stream.
+
+---
+
+## Features of KPL
+
+### 1. High Throughput
+
+* Sends large numbers of records efficiently.
+* Optimized for high-speed data ingestion.
+
+### 2. Record Batching
+
+* Combines multiple small records into a single request.
+* Reduces the number of API calls.
+* Improves performance and lowers costs.
+
+### 3. Automatic Retries
+
+* Automatically retries failed requests.
+* Improves reliability.
+
+### 4. Asynchronous Processing
+
+* Sends data in the background without blocking the application.
+* Improves application performance.
+
+### 5. Aggregation
+
+* Combines multiple user records into one Kinesis record.
+* Maximizes the use of the 1 MB record size limit.
+
+---
+
+## How KPL Works
+
+```text
+Producer Application
+        │
+        ▼
+Kinesis Producer Library (KPL)
+        │
+        ▼
+Amazon Kinesis Data Streams
+        │
+        ▼
+Consumers (Lambda, KCL, Analytics, etc.)
+```
+
+---
+
+## Advantages
+
+* High performance
+* Efficient batching and aggregation
+* Automatic retries
+* Easy integration with Java applications
+* Reduces network overhead
+
+---
+
+## Example Use Cases
+
+* IoT sensor data
+* Website clickstream events
+* Application log streaming
+* Financial transaction processing
+* Real-time analytics
+
+---
+
+# Producer vs Consumer
+
+| Producer              | Consumer                                          |
+| --------------------- | ------------------------------------------------- |
+| Sends data to Kinesis | Reads data from Kinesis                           |
+| Uses **KPL**          | Often uses **KCL (Kinesis Client Library)**       |
+| Example: IoT device   | Example: Lambda function or analytics application |
+
+---
+
+# Quick Exam Summary
+
+* **KPL (Kinesis Producer Library)** is a **Java library** for sending data to **Amazon Kinesis Data Streams**.
+* It provides:
+
+  * **Batching** – Groups multiple records into one request.
+  * **Aggregation** – Packs multiple user records into a single Kinesis record.
+  * **Asynchronous writes** – Sends data in the background.
+  * **Automatic retries** – Handles temporary failures.
+  * **High throughput** – Efficiently sends large volumes of streaming data.
+
+**Exam Tip:** Don't confuse **KPL** with **KCL**:
+
+* **KPL = Producer (writes data)**
+* **KCL = Consumer (reads and processes data)**
+
